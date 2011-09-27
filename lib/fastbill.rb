@@ -8,8 +8,5 @@ module Fastbill
       @api_key = api_key
       self
     end
-    def test
-      puts @email
-    end
   end
 end
