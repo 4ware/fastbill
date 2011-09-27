@@ -1,0 +1,21 @@
+customer
+  get
+  create
+  update
+  delete
+invoice
+  get
+  create
+  update
+  delete
+  sign
+  sendbyemail
+recurring
+  get
+  create
+  update
+  delete
+item
+  get
+  delete
+  
