@@ -49,6 +49,65 @@ class Customer
       false
     end
   end
+  def save
+    if @is_new
+      #create
+      options = {
+        :basic_auth => @auth,
+        :headers => {
+          "Content-Type" => "application/xml"
+        },
+        :body => '<?xml version="1.0" encoding="utf-8"?><FBAPI><SERVICE>customer.create</SERVICE><DATA>' + self.to_xml + '</DATA></FBAPI>'
+      }
+      r = self.class.post('/api/0.1/api.php', options)
+      body = Crack::XML.parse r.body
+      if !body['FBAPI']["RESPONSE"]["STATUS"].nil? && body['FBAPI']["RESPONSE"]["STATUS"] == "success"
+        unless body['FBAPI']["RESPONSE"]["STATUS"]["CUSTOMER_ID"].nil?
+          @id = body['FBAPI']["RESPONSE"]["STATUS"]["CUSTOMER_ID"]
+        end
+        @is_new = false
+        self
+      else
+        false
+      end
+    else
+      #update
+      options = {
+        :basic_auth => @auth,
+        :headers => {
+          "Content-Type" => "application/xml"
+        },
+        :body => '<?xml version="1.0" encoding="utf-8"?><FBAPI><SERVICE>customer.update</SERVICE><DATA>' + self.to_xml + '</DATA></FBAPI>'
+      }
+      r = self.class.post('/api/0.1/api.php', options)
+      body = Crack::XML.parse r.body
+      if !body['FBAPI']["RESPONSE"]["STATUS"].nil? && body['FBAPI']["RESPONSE"]["STATUS"] == "success"
+        unless body['FBAPI']["RESPONSE"]["STATUS"]["CUSTOMER_ID"].nil?
+          @id = body['FBAPI']["RESPONSE"]["STATUS"]["CUSTOMER_ID"]
+        end
+        self
+      else
+        false
+      end
+    end
+  end
+  def delete!
+    options = {
+      :basic_auth => @auth,
+      :headers => {
+        "Content-Type" => "application/xml"
+      },
+      :body => '<?xml version="1.0" encoding="utf-8"?><FBAPI><SERVICE>customer.delete</SERVICE><DATA><CUSTOMER_ID>' + @id + '</CUSTOMER_ID></DATA></FBAPI>'
+    }
+    r = self.class.post('/api/0.1/api.php', options)
+    body = Crack::XML.parse r.body
+    if !body['FBAPI']["RESPONSE"]["STATUS"].nil? && body['FBAPI']["RESPONSE"]["STATUS"] == "success"
+      true
+    else
+      false
+    end
+    
+  end
   
   def hydrate(body)
     @is_new = false
