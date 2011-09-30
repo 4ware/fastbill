@@ -14,13 +14,9 @@ module Fastbill
     end
     def customers
       c = Customer.new(@auth).customers
-      unless c.body.nil?
-        r = Crack::XML.parse c.body
-        r['FBAPI']['RESPONSE']
-      end
     end
-    def customer(id)
-      Customer.new(@auth).find(id)
+    def customer_get(id)
+      Customer.new(@auth).get(id)
     end
 
     def fetch(req)
