@@ -1,5 +1,4 @@
 class Customer
-  # 62288
   include HTTParty
   base_uri 'https://portal.fastbill.com'
 
