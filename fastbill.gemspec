@@ -20,6 +20,8 @@ Gem::Specification.new do |s|
 
   # specify any dependencies here; for example:
   s.add_development_dependency "rspec"
-  s.add_development_dependency "json"
-  s.add_runtime_dependency "json"
+  s.add_development_dependency "httparty"
+  s.add_development_dependency "crack"
+  s.add_runtime_dependency "httparty"
+  s.add_runtime_dependency "crack"
 end
