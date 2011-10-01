@@ -1,1 +1,1 @@
-test
+= fastbill - a ruby wrapper for the fastbill.com API
