@@ -18,10 +18,5 @@ module Fastbill
     def customer_get(id)
       Customer.new(@auth).get(id)
     end
-
-    def fetch(req)
-      options = { :query => req, :basic_auth => @auth }
-      self.class.post('/api/0.1/api.php', options)
-    end
   end
 end
