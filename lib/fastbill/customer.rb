@@ -122,7 +122,7 @@ class Customer
     @bank_account_owner = body["BANK_ACCOUNT_OWNER"]
     @show_payment_notice = body["SHOW_PAYMENT_NOTICE"]
     @account_receiveable = body["ACCOUNT_RECEIVEABLE"]
-    @type = body["CUSTOMER_TYPE"]
+    @customer_type = body["CUSTOMER_TYPE"]
     @top = body["TOP"] == "1" ? true : false
     @organization = body["ORGANIZATION"]
     @position = body["POSITION"]
