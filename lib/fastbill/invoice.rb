@@ -8,28 +8,40 @@ class Invoice
     @auth = auth
     @is_new = true
   end
-  
-  def get(id = nil, customer_id = nil, month = nil, year = nil)
+  def get(id = nil, customer_id = nil, year = nil, month = nil)
+    invoices = []
+    body = '<?xml version="1.0" encoding="utf-8"?><FBAPI><SERVICE>invoice.get</SERVICE><FILTER>'
     if id
-      #fetch invoice
-      options = {
-        :basic_auth => @auth,
-        :headers => {
-          "Content-Type" => "application/xml"
-        },
-        :body => '<?xml version="1.0" encoding="utf-8"?><FBAPI><SERVICE>invoice.get</SERVICE><FILTER><INVOICE_ID>' + id.to_s + '</INVOICE_ID></FILTER></FBAPI>'
-      }
-      r = self.class.post('/api/0.1/api.php', options)
-      body = Crack::XML.parse r.body
-      if !body['FBAPI']["RESPONSE"]["INVOICES"].nil?
-        hydrate(body['FBAPI']["RESPONSE"]["INVOICES"]["INVOICE"])
-        self
-      else
-        false
-      end
-    else
-      #search invoices
+      body = body + '<INVOICE_ID>' + id.to_s + '</INVOICE_ID>'
+    elsif customer_id
+      body = body + '<CUSTOMER_ID>' + customer_id.to_s + '</CUSTOMER_ID>'
+    elsif year
+      body = body + '<YEAR>' + year.to_s + '</YEAR>'
+    elsif month
+      body = body + '<MONTH>' + month.to_s + '</MONTH>'
     end
+    body = body + '</FILTER></FBAPI>'
+    options = {
+      :basic_auth => @auth,
+      :headers => {
+        "Content-Type" => "application/xml"
+      },
+      :body => body
+    }
+    r = self.class.post('/api/0.1/api.php', options)
+    body = Crack::XML.parse r.body
+    if body['FBAPI']["RESPONSE"]["INVOICES"]["INVOICE"].class.to_s == 'Hash'
+      inv = Invoice.new(@auth)
+      inv.hydrate(body['FBAPI']["RESPONSE"]["INVOICES"]["INVOICE"])
+      invoices.push inv
+    else
+      for invoice in body['FBAPI']["RESPONSE"]["INVOICES"]["INVOICE"].each
+        inv = Invoice.new(@auth)
+        inv.hydrate(invoice)
+        invoices.push inv
+      end
+    end
+    invoices
   end
   def save
     
@@ -61,9 +73,12 @@ class Invoice
     end
     @invoice_items = []
     for item in body["ITEMS"].each
-      i =  InvoiceItem.new(@auth)
-      i.hydrate(item.last)
-      @invoice_items.push i
+      begin
+        i =  InvoiceItem.new(@auth)
+        i.hydrate(item.last)
+        @invoice_items.push i
+      rescue
+      end
     end
   end
   def parse_date(date)
