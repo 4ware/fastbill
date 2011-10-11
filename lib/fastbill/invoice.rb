@@ -43,12 +43,6 @@ class Invoice
     end
     invoices
   end
-  def save
-    
-  end
-  def delete!
-    
-  end
   def hydrate(body)
     @is_new = false
     @id = body["INVOICE_ID"]
@@ -262,7 +256,7 @@ class Invoice
       false
     end
   end
-  def safe
+  def safe!
     if @is_new
       #create
       options = {
