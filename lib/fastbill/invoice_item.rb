@@ -26,6 +26,10 @@ class InvoiceItem
     @sort_order = body["SORT_ORDER"]
   end
   def to_xml
-    
+    xml = "<ITEM>"
+    unless @id.nil
+      xml = xml + "<INVOICE_ITEM_ID>#{@id}</INVOICE_ITEM_ID>"
+    end
+    xml = xml + "</ITEM>"
   end
 end

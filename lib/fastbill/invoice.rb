@@ -2,7 +2,7 @@ class Invoice
   include HTTParty
   base_uri 'https://portal.fastbill.com'
 
-  attr_accessor :id, :invoice_type, :customer_id, :customer_costcenter_id, :currency_code, :template_id, :intro_text, :invoice_number, :payed_date, :is_canceled, :invoice_date, :due_date, :delivery_date, :sub_total, :vat_total, :total, :vat_items, :items, :is_new
+  attr_accessor :id, :invoice_type, :customer_id, :customer_costcenter_id, :currency_code, :template_id, :intro_text, :invoice_number, :payed_date, :is_canceled, :invoice_date, :due_date, :delivery_date, :sub_total, :vat_total, :total, :vat_items, :invoice_items, :is_new
 
   def initialize(auth = nil)
     @auth = auth
@@ -38,7 +38,6 @@ class Invoice
     
   end
   def hydrate(body)
-    #"INVOICE_ID"=>"72783", "INVOICE_TYPE"=>"outgoing", "CUSTOMER_ID"=>"62288", "CUSTOMER_COSTCENTER_ID"=>"0", "CURRENCY_CODE"=>"EUR", "TEMPLATE_ID"=>"3493", "INVOICE_NUMBER"=>"145", "INTROTEXT"=>"Guten Tag Herr Schlenker,\n\nanbei meine Rechnung über den Umbau der Young Gans Community auf das aktuelle Layout.\n\nGruß, Kai Wernicke", "PAYED_DATE"=>"0000-00-00 00:00:00", "IS_CANCELED"=>"0", "INVOICE_DATE"=>"2011-10-10", "DUE_DATE"=>"2011-10-24 09:54:09", "DELIVERY_DATE"=>nil, "SUB_TOTAL"=>"100", "VAT_TOTAL"=>"19", "VAT_ITEMS"=>{"VAT_ITEM"=>{"VAT_PERCENT"=>"19.00", "VAT_VALUE"=>"19"}}, "ITEMS"=>{"ITEM"=>{"INVOICE_ITEM_ID"=>"148279", "ARTICLE_NUMBER"=>nil, "DESCRIPTION"=>"Stunden / Programmierung", "QUANTITY"=>"5.00", "UNIT_PRICE"=>"20.0000", "VAT_PERCENT"=>"19.00", "VAT_VALUE"=>"19", "COMPLETE_NET"=>"100", "COMPLETE_GROSS"=>"119", "SORT_ORDER"=>"1"}}, "TOTAL"=>"119"
     @is_new = false
     @id = body["INVOICE_ID"]
     @invoice_type = body["INVOICE_TYPE"]
@@ -60,11 +59,11 @@ class Invoice
     for vat_item in body["VAT_ITEMS"].each
       @vat_items.push InvoiceVatItem.new vat_item.last
     end
-    @items = []
+    @invoice_items = []
     for item in body["ITEMS"].each
       i =  InvoiceItem.new(@auth)
       i.hydrate(item.last)
-      @items.push i
+      @invoice_items.push i
     end
   end
   def parse_date(date)
