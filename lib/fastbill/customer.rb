@@ -105,8 +105,7 @@ class Customer
       true
     else
       false
-    end
-    
+    end    
   end
   
   def hydrate(body)
