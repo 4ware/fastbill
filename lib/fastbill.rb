@@ -2,6 +2,9 @@ require 'httparty'
 require 'crack/xml'
 require "fastbill/version"
 require "fastbill/customer"
+require "fastbill/invoice"
+require "fastbill/invoice_item"
+require "fastbill/invoice_vat_item"
 
 module Fastbill
   attr_reader :auth
@@ -17,6 +20,9 @@ module Fastbill
     end
     def customer_get(id)
       Customer.new(@auth).get(id)
+    end
+    def invoice
+      Invoice.new(@auth)
     end
   end
 end
