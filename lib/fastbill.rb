@@ -5,6 +5,7 @@ require "fastbill/customer"
 require "fastbill/invoice"
 require "fastbill/invoice_item"
 require "fastbill/invoice_vat_item"
+require "fastbill/recurring"
 
 module Fastbill
   attr_reader :auth
@@ -23,6 +24,9 @@ module Fastbill
     end
     def invoice
       Invoice.new(@auth)
+    end
+    def recurring
+      Recurring.new(@auth)
     end
   end
 end
