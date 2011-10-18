@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
 
   # specify any dependencies here; for example:
   s.add_development_dependency "rspec"
+  s.add_development_dependency "vcr"
   s.add_development_dependency "guard"
   s.add_development_dependency "growl_notify"
   s.add_development_dependency "httparty"
